@@ -1,6 +1,5 @@
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = "https://mock-backend-hintro.vercel.app";
 
-// Helper to get user ID from localStorage safely (client-side only)
 const getUserId = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("hintro_user_id") || "u1";
@@ -48,10 +47,6 @@ export interface FeedbackItem {
   description: string;
   date: string;
   time: string;
-}
-
-export interface FeedbackResponse {
-  feedback: FeedbackItem[];
 }
 
 export interface UserProfile {
@@ -108,16 +103,16 @@ export async function getCallHistory(limit = 10, page = 1): Promise<CallHistoryR
   }
 }
 
-export async function getFeedback(): Promise<FeedbackResponse | null> {
+export async function getProfile(): Promise<UserProfile | null> {
   try {
-    const res = await fetch(`${BASE_URL}/api/feedback`, {
+    const res = await fetch(`${BASE_URL}/api/auth/profile`, {
       headers: { "x-user-id": getUserId() },
       cache: "no-store",
     });
     if (!res.ok) return null;
     return res.json();
   } catch (error) {
-    console.error("Error fetching feedback:", error);
+    console.error("Error fetching profile:", error);
     return null;
   }
 }

@@ -2,8 +2,6 @@ import { createServer } from "http";
 
 const PORT = 3001;
 
-/* -------------------------- HELPERS -------------------------- */
-
 const random = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -34,8 +32,6 @@ const participantNames = [
   "Sarah Wilson",
   "Emily Davis",
 ];
-
-/* -------------------------- USER DATA -------------------------- */
 
 const users = {
   u1: {
@@ -89,15 +85,10 @@ const users = {
   },
 };
 
-/* -------------------------- RANDOM GENERATORS -------------------------- */
-
 const generateStats = () => ({
   totalSessions: random(1, 200),
-
   averageDuration: random(300, 8000),
-
   totalAIInteractions: random(1, 70),
-
   lastSession: [
     new Date().toISOString(),
     new Date(Date.now() - 86400000).toISOString(),
@@ -111,79 +102,46 @@ const generateDashboard = () => ({
     billing_cycle: "monthly",
     status: "active",
   },
-
   usage: {
     kb_files: {
       used: random(50, 500),
       limit: 1000,
       percentage: random(5, 90),
     },
-
     vocab_terms: random(20, 200),
-
     notes: random(5, 100),
   },
 });
 
 const generateCallSessions = (limit = 10, page = 1) => {
   const sessions = [];
-  const totalCount = 15; // Simulate 15 total items
+  const totalCount = 15;
   const totalPages = Math.ceil(totalCount / limit);
 
   for (let i = 0; i < limit; i++) {
     const duration = random(300, 3600);
-
-    const startedAt = new Date(
-      Date.now() - random(1, 60) * 86400000
-    );
-
-    const endedAt = new Date(
-      startedAt.getTime() + duration * 1000
-    );
+    const startedAt = new Date(Date.now() - random(1, 60) * 86400000);
+    const endedAt = new Date(startedAt.getTime() + duration * 1000);
 
     sessions.push({
       _id: `cs${i + 1}`,
-
       user_id: "u2",
-
       status: "ended",
-
-      client:
-        clients[random(0, clients.length - 1)],
-
-      description:
-        descriptions[random(0, descriptions.length - 1)],
-
+      client: clients[random(0, clients.length - 1)],
+      description: descriptions[random(0, descriptions.length - 1)],
       started_at: startedAt.toISOString(),
-
       ended_at: endedAt.toISOString(),
-
       total_duration_seconds: duration,
-
       language: ["en"],
-
-      auto_gen_ai_response:
-        Math.random() > 0.5,
-
+      auto_gen_ai_response: Math.random() > 0.5,
       save_transcript: true,
-
       transcript: null,
-
       transcript_final: Math.random() > 0.5,
-
       ai_interactions: random(1, 10),
-
       call_framework_id: null,
-
       participants: [
         {
-          name:
-            participantNames[
-              random(
-                0,
-                participantNames.length - 1
-              )
-            ],
+          name: participantNames[random(0, participantNames.length - 1)],
           isUser: true,
         },
         {
@@ -191,18 +149,14 @@ const generateCallSessions = (limit = 10, page = 1) => {
           isUser: false,
         },
       ],
-
       ended_reason: "user_ended",
-
       createdAt: startedAt.toISOString(),
-
       updatedAt: endedAt.toISOString(),
     });
   }
 
   return {
     callSessions: sessions,
-
     pagination: {
       page,
       limit,
@@ -233,25 +187,10 @@ const generateFeedback = () => ({
   ],
 });
 
-/* -------------------------- SERVER -------------------------- */
-
 const server = createServer((req, res) => {
-  /* -------------------------- CORS -------------------------- */
-
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "*"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, OPTIONS"
-  );
-
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, x-user-id"
-  );
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-user-id");
 
   if (req.method === "OPTIONS") {
     res.writeHead(204);
@@ -259,169 +198,79 @@ const server = createServer((req, res) => {
     return;
   }
 
-  /* -------------------------- URL -------------------------- */
-
-  const url = new URL(
-    req.url,
-    `http://${req.headers.host}`
-  );
-
-  const userId =
-    req.headers["x-user-id"] || "u1";
-
-  /* -------------------------- HEALTH -------------------------- */
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const userId = req.headers["x-user-id"] || "u1";
 
   if (url.pathname === "/health") {
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
-    res.end(
-      JSON.stringify({
-        status: "ok",
-        message: "Mock server is running",
-      })
-    );
-
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ status: "ok", message: "Mock server is running" }));
     return;
   }
-
-  /* -------------------------- PROFILE -------------------------- */
 
   if (url.pathname === "/api/auth/profile") {
-    const profile =
-      users[userId]?.profile || users.u1.profile;
-
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
+    const profile = users[userId]?.profile || users.u1.profile;
+    res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(profile));
-
     return;
   }
-
-  /* -------------------------- DASHBOARD -------------------------- */
 
   if (url.pathname === "/api/auth/dashboard") {
     let response;
-
     if (userId === "u1") {
       response = {
         user: users.u1.profile,
-
-        subscription:
-          users.u1.dashboard.subscription,
-
+        subscription: users.u1.dashboard.subscription,
         usage: users.u1.dashboard.usage,
       };
     } else {
       response = {
         user: users.u2.profile,
-
-        subscription:
-          generateDashboard().subscription,
-
+        subscription: generateDashboard().subscription,
         usage: generateDashboard().usage,
       };
     }
-
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
+    res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(response));
-
     return;
   }
 
-  /* -------------------------- STATS -------------------------- */
-
-  if (
-    url.pathname ===
-    "/api/call-sessions/stats"
-  ) {
-    const response =
-      userId === "u1"
-        ? users.u1.stats
-        : generateStats();
-
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
+  if (url.pathname === "/api/call-sessions/stats") {
+    const response = userId === "u1" ? users.u1.stats : generateStats();
+    res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(response));
-
     return;
   }
 
-  /* -------------------------- CALL HISTORY -------------------------- */
-
-  if (
-    url.pathname === "/api/call-sessions"
-  ) {
-    const limit = Number(
-      url.searchParams.get("limit") || 10
-    );
-    const page = Number(
-      url.searchParams.get("page") || 1
-    );
-
-    const response =
-      userId === "u1"
-        ? {
-            callSessions: [],
-
-            pagination: {
-              page,
-              limit,
-              totalCount: 0,
-              totalPages: 1,
-              hasNextPage: false,
-              hasPrevPage: false,
-            },
-          }
-        : generateCallSessions(limit, page);
-
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
+  if (url.pathname === "/api/call-sessions") {
+    const limit = Number(url.searchParams.get("limit") || 10);
+    const page = Number(url.searchParams.get("page") || 1);
+    const response = userId === "u1" ? {
+      callSessions: [],
+      pagination: {
+        page,
+        limit,
+        totalCount: 0,
+        totalPages: 1,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    } : generateCallSessions(limit, page);
+    res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(response));
-
     return;
   }
-
 
   if (url.pathname === "/api/feedback") {
-    const response =
-      userId === "u1" ? { feedback: [] } : generateFeedback();
-
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-    });
-
+    const response = userId === "u1" ? { feedback: [] } : generateFeedback();
+    res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify(response));
-
     return;
   }
 
-
-  res.writeHead(404, {
-    "Content-Type": "application/json",
-  });
-
-  res.end(
-    JSON.stringify({
-      message: "Route not found",
-    })
-  );
+  res.writeHead(404, { "Content-Type": "application/json" });
+  res.end(JSON.stringify({ message: "Route not found" }));
 });
 
-/* -------------------------- START SERVER -------------------------- */
-
 server.listen(PORT, () => {
-  console.log(
-    `Mock server running at http://localhost:${PORT}`
-  );
+  console.log(`Mock server running at http://localhost:${PORT}`);
 });

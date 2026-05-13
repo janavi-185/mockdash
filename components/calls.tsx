@@ -40,7 +40,7 @@ const CallItem = ({ title, time, initial, color, participants = [] }: CallItemPr
     <div className="flex items-center gap-4">
       <span className="text-[13px] md:text-sm font-semibold text-foreground/80">{time}</span>
       <button className="p-1.5 hover:bg-muted rounded-md transition-colors">
-        <MoreVertical size={18} className="text-black" />
+        <MoreVertical size={18} className="text-foreground" />
       </button>
     </div>
   </div>
@@ -52,25 +52,36 @@ export default function Calls() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const loadData = useCallback(async (page = 1, append = false) => {
-    if (page !== 1) setLoadingMore(true);
-
-    const data = await getCallHistory(5, page);
+  const loadMoreData = useCallback(async () => {
+    if (!pagination?.hasNextPage || loadingMore) return;
+    
+    setLoadingMore(true);
+    const data = await getCallHistory(5, pagination.page + 1);
     if (data) {
-      if (append) {
-        setSessions(prev => [...prev, ...data.callSessions]);
-      } else {
-        setSessions(data.callSessions);
-      }
+      setSessions(prev => [...prev, ...data.callSessions]);
       setPagination(data.pagination);
     }
-    setLoading(false);
     setLoadingMore(false);
-  }, []);
+  }, [pagination, loadingMore]);
 
   useEffect(() => {
-    loadData(1);
-  }, [loadData]);
+    let isMounted = true;
+    
+    async function initialLoad() {
+      const data = await getCallHistory(5, 1);
+      if (isMounted && data) {
+        setSessions(data.callSessions);
+        setPagination(data.pagination);
+        setLoading(false);
+      }
+    }
+    
+    initialLoad();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   if (loading) return <div className="text-center py-12 text-muted-foreground text-sm font-medium">Loading calls...</div>;
 
@@ -87,7 +98,7 @@ export default function Calls() {
               Connect your Google Calendar to see upcoming meetings, get reminders, and join calls directly from Hintro.
             </p>
           </div>
-          <Button variant="outline" size="sm" className="rounded-md border-gray-300">
+          <Button variant="outline" size="sm" className="rounded-md border-border">
             Start a call
           </Button>
         </div>
@@ -123,7 +134,7 @@ export default function Calls() {
                 title={session.description || "Discovery Call"} 
                 time={new Date(session.started_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase()} 
                 initial={session.client ? session.client[0] : "C"} 
-                color="bg-purple-600"
+                color="bg-hintro-purple"
                 participants={session.participants}
               />
             ))}
@@ -137,8 +148,8 @@ export default function Calls() {
             variant="outline" 
             size="sm" 
             disabled={loadingMore}
-            onClick={() => loadData(pagination.page + 1, true)}
-            className="rounded-md border-gray-300 text-xs font-bold px-6 h-9"
+            onClick={loadMoreData}
+            className="rounded-md border-border text-xs font-bold px-6 h-9"
           >
             {loadingMore ? (
               <>

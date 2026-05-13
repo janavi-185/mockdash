@@ -14,10 +14,9 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple logic for the 2 users requirement
-    let userId = "u1"; // Default to empty state user
+    let userId = "u1";
     if (email.toLowerCase() === "user2@hintro.com") {
-      userId = "u2"; // Filled state user
+      userId = "u2";
     }
     
     localStorage.setItem("hintro_user_id", userId);

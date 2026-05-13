@@ -28,30 +28,27 @@ export default function LogoutModal({ onCancel }: LogoutModalProps) {
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-md shadow-md w-full max-w-[500px] overflow-hidden"
+        className="bg-background rounded-md shadow-md w-full max-w-[500px] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 md:p-10 flex flex-col">
-          {/* Header */}
           <div className="border-b border-border pb-2 md:pb-5 mb-5 md:mb-8">
-            <h2 className="text-[14px] md:text-2xl font-bold text-gray-900 leading-tight">
+            <h2 className="text-[14px] md:text-2xl font-bold text-foreground leading-tight">
               Leaving already?
             </h2>
           </div>
 
-          {/* Body */}
           <div className="mb-8 md:mb-10">
-            <p className="text-[10px] md:text-sm text-gray-600 font-medium leading-relaxed">
+            <p className="text-[10px] md:text-sm text-muted-foreground font-medium leading-relaxed">
               You can log back in anytime to continue your meetings with Hintro.
             </p>
           </div>
 
-          {/* Footer buttons */}
           <div className="flex items-center justify-between">
             <Button 
               variant="outline" 
               size="xs"
-              className="md:h-11 md:px-8 md:text-sm h-8 px-4 text-[10px] font-bold border-gray-300 rounded-md"
+              className="md:h-11 md:px-8 md:text-sm h-8 px-4 text-[10px] font-bold border-border rounded-md"
               onClick={onCancel}
             >
               Cancel
@@ -59,7 +56,7 @@ export default function LogoutModal({ onCancel }: LogoutModalProps) {
             <Button 
               variant="default" 
               size="xs"
-              className="md:h-11 md:px-10 md:text-sm h-8 px-6 text-[10px] font-bold bg-black hover:bg-gray-900 rounded-md"
+              className="md:h-11 md:px-10 md:text-sm h-8 px-6 text-[10px] font-bold bg-foreground hover:bg-foreground/90 text-background rounded-md"
               onClick={handleLogout} 
             >
               Log out

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { Sidebar } from "@/components/Sidebar";
 import { Topbar } from "@/components/Topbar";
+import FeedbackModal from "@/components/FeedbackModal";
 
 export default function DashboardLayout({
   children,
@@ -12,11 +13,10 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
 
   const getTitle = () => {
     if (pathname === "/Dashboard/feedback-history") return "Feedback History";
-    if (pathname === "/Dashboard/feedback") return "Give Feedback";
-    // if(pathname === "/Dashboard/dashboard") return "Dashboard";
     return "Dashboard";
   };
 
@@ -36,7 +36,10 @@ export default function DashboardLayout({
           ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
-        <Sidebar onClose={() => setSidebarOpen(false)} />
+        <Sidebar 
+          onClose={() => setSidebarOpen(false)} 
+          onFeedbackClick={() => setFeedbackOpen(true)}
+        />
       </div>
 
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
@@ -48,6 +51,16 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
+
+      <FeedbackModal 
+        isOpen={feedbackOpen} 
+        onClose={() => setFeedbackOpen(false)} 
+        onSubmitSuccess={() => {
+          if (pathname === "/Dashboard/feedback-history") {
+            window.location.reload();
+          }
+        }}
+      />
     </div>
   );
 }

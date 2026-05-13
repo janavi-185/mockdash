@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Calls from "@/components/calls";
-import { getStats, type DashboardStats } from "@/lib/api";
+import { getStats, getProfile, type DashboardStats } from "@/lib/api";
 
 interface StatCardProps {
   label: string;
@@ -38,13 +38,26 @@ function StatCard({ label, value, icon, iconBg }: StatCardProps) {
 
 export default function Dash() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [userName, setUserName] = useState("Name");
 
   useEffect(() => {
+    let isMounted = true;
+    
     async function loadData() {
-      const data = await getStats();
-      if (data) setStats(data);
+      const statsData = await getStats();
+      if (isMounted && statsData) setStats(statsData);
+      
+      const profileData = await getProfile();
+      if (isMounted && profileData) {
+        setUserName(profileData.firstName || "Name");
+      }
     }
+    
     loadData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const formatDuration = (seconds?: number) => {
@@ -69,14 +82,14 @@ export default function Dash() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div>
           <h2 className="text-xl md:text-2xl font-bold text-foreground leading-tight">
-            Hi, Name 👋 Welcome to Hintro
+            Hi, {userName} 👋 Welcome to Hintro
           </h2>
           <p className="text-[11px] md:text-sm text-muted-foreground mt-1.5 font-medium">
             Ready to make your next call smarter ?
           </p>
         </div>
         <div className="flex md:justify-end justify-start">
-          <Button variant="default" size="sm" className="px-5 py-2 text-[11px] md:text-sm font-bold rounded-md bg-black hover:bg-gray-900 h-9 md:h-11 md:px-6">
+          <Button variant="default" size="sm" className="px-5 py-2 text-[11px] md:text-sm font-bold rounded-md h-9 md:h-11 md:px-6">
             <span className="md:hidden">Start Call</span>
             <span className="hidden md:inline">Start New Call</span>
           </Button>

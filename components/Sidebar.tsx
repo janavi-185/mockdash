@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -13,10 +12,8 @@ import {
   Gift,
   AlertCircle,
   X,
-  HardDrive,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getDashboardData, type DashboardResponse } from "@/lib/api";
 
 const topNav = [
   { label: "Dashboard", href: "/Dashboard", icon: LayoutDashboard, alert: false },
@@ -28,24 +25,20 @@ const topNav = [
 
 const bottomNav = [
   { label: "Feedback History", href: "/Dashboard/feedback-history", icon: Inbox },
-  { label: "Feedback", href: "/Dashboard/feedback", icon: Gift },
+  { label: "Feedback", href: "#", icon: Gift, isModal: true },
 ];
 
 interface SidebarProps {
   onClose?: () => void;
+  onFeedbackClick?: () => void;
 }
 
-export function Sidebar({ onClose }: SidebarProps) {
+export function Sidebar({ onClose, onFeedbackClick }: SidebarProps) {
   const pathname = usePathname();
-  const [usage, setUsage] = useState<DashboardResponse["usage"] | null>(null);
 
-  useEffect(() => {
-    async function fetchUsage() {
-      const data = await getDashboardData();
-      if (data) setUsage(data.usage);
-    }
-    fetchUsage();
-  }, []);
+  const handleLinkClick = () => {
+    if (onClose) onClose();
+  };
 
   return (
     <aside
@@ -70,16 +63,17 @@ export function Sidebar({ onClose }: SidebarProps) {
             <Link
               key={href}
               href={href}
+              onClick={handleLinkClick}
               className={`flex items-center justify-between gap-3 px-4 py-2.5 rounded-md text-sm font-semibold transition-colors duration-150 ${
                 isActive
-                  ? "bg-[#E6EFFF] text-[#4F80FF]"
+                  ? "bg-hintro-light-blue text-hintro-blue"
                   : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60"
               }`}
             >
               <span className="flex items-center gap-3">
                 <Icon
                   size={18}
-                  className={isActive ? "text-[#4F80FF]" : "text-sidebar-foreground/70"}
+                  className={isActive ? "text-hintro-blue" : "text-sidebar-foreground/70"}
                 />
                 {label}
               </span>
@@ -91,22 +85,21 @@ export function Sidebar({ onClose }: SidebarProps) {
         })}
       </nav>
 
-      <div className="mt-auto">
-        <div className="h-[1px] bg-sidebar-border mx-4 mb-4" />
+      <div className="mt-auto mb-13 ">
+        <div className="h-px bg-sidebar-border mx-4 mb-4" />
         
-        {/* Usage Stats from API */}
-        {usage && (
+        {/* {usage && (
           <div className="px-6 mb-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold text-sidebar-foreground/50 uppercase tracking-wider flex items-center gap-1.5">
                 <HardDrive size={12} />
                 Storage
               </span>
-              <span className="text-[11px] font-bold text-[#4F80FF]">{usage.kb_files.percentage}%</span>
+              <span className="text-[11px] font-bold text-hintro-blue">{usage.kb_files.percentage}%</span>
             </div>
             <div className="w-full bg-sidebar-border rounded-full h-1.5 mb-2">
               <div 
-                className="bg-[#4F80FF] h-1.5 rounded-full transition-all duration-500" 
+                className="bg-hintro-blue h-1.5 rounded-full transition-all duration-500" 
                 style={{ width: `${usage.kb_files.percentage}%` }}
               />
             </div>
@@ -114,29 +107,48 @@ export function Sidebar({ onClose }: SidebarProps) {
               {usage.kb_files.used} of {usage.kb_files.limit} files used
             </p>
           </div>
-        )}
+        )} */}
 
         <nav className="flex flex-col gap-2 px-3 mb-6">
-          {bottomNav.map(({ label, href, icon: Icon }) => {
-            const isActive = pathname === href;
+          {bottomNav.map(({ label, href, icon: Icon, isModal }) => {
+            const isActive = !isModal && pathname === href;
+            
+            if (isModal) {
+              return (
+                <button
+                  key={label}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (onFeedbackClick) onFeedbackClick();
+                    handleLinkClick();
+                  }}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-semibold transition-colors duration-150 text-sidebar-foreground/80 hover:bg-sidebar-accent/60 w-full text-left"
+                >
+                  <Icon size={18} className="text-sidebar-foreground/70" />
+                  {label}
+                </button>
+              );
+            }
+
             return (
               <Link
                 key={href}
                 href={href}
+                onClick={handleLinkClick}
                 className={`flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-semibold transition-colors duration-150 ${
                   isActive
-                    ? "bg-[#E6EFFF] text-[#4F80FF]"
+                    ? "bg-hintro-light-blue text-hintro-blue"
                     : "text-sidebar-foreground/80 hover:bg-sidebar-accent/60"
                 }`}
               >
-                <Icon size={18} className={isActive ? "text-[#4F80FF]" : "text-sidebar-foreground/70"} />
+                <Icon size={18} className={isActive ? "text-hintro-blue" : "text-sidebar-foreground/70"} />
                 {label}
               </Link>
             );
           })}
         </nav>
 
-        <div className="px-5 pb-8">
+        <div className="px-5 pb-8 mx-4">
           <Button 
             variant="secondary" 
             onClick={() => {
@@ -145,7 +157,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               localStorage.setItem("hintro_user_id", nextId);
               window.location.reload();
             }}
-            className="w-full bg-[#8A8A8A] hover:bg-[#7A7A7A] text-white font-bold h-10 rounded-md"
+            className="w-full bg-muted-foreground hover:bg-muted-foreground/90 text-secondary font-bold h-10 rounded-md"
           >
             Upgrade
           </Button>
