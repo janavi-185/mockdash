@@ -13,20 +13,25 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: add real auth logic here
+    
+    // Simple logic for the 2 users requirement
+    let userId = "u1"; // Default to empty state user
+    if (email.toLowerCase() === "user2@hintro.com") {
+      userId = "u2"; // Filled state user
+    }
+    
+    localStorage.setItem("hintro_user_id", userId);
     router.push("/Dashboard");
   };
 
   return (
     <section className="min-h-screen w-full flex md:items-center items-start md:justify-center justify-center bg-background px-4">
       <div className="w-full p-3 max-w-sm">
-        {/* Title */}
         <h1 className="md:text-3xl text-2xl font-bold text-center text-foreground mb-12 pt-16 md:pt-0">
           Login
         </h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-7">
-          {/* Email Field */}
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="email"
@@ -50,7 +55,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Password Field */}
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="password"
@@ -79,7 +83,6 @@ const Login = () => {
             </div>
           </div>
 
-          {/* Login Button */}
           <Button
             type="submit"
             variant="default"

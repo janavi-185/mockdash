@@ -9,13 +9,10 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        // Solid fill — matches image button 1
         default:
           "bg-primary text-primary-foreground hover:opacity-90 active:scale-[0.98]",
-        // Border only — matches image button 2
         outline:
-          "border-border bg-background text-foreground hover:bg-muted active:scale-[0.98]",
-        // Subtle fill, no border — matches image button 3
+          "border-black bg-background text-foreground hover:bg-muted active:scale-[0.98]",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/70 active:scale-[0.98]",
         ghost:
@@ -27,11 +24,11 @@ const buttonVariants = cva(
       size: {
         default: "h-10 gap-1.5 px-5 text-sm",
         xs: "h-6 gap-1 rounded-lg px-2 text-xs [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-8 gap-1 rounded-xl px-4 text-sm [&_svg:not([class*='size-'])]:size-3.5",
+        sm: "h-8 gap-1 rounded-md px-4 text-sm [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-11 gap-2 px-6 text-sm",
         xl: "h-12 gap-2 px-6 text-base",
         icon: "size-10",
-        "icon-sm": "size-8 rounded-xl",
+        "icon-sm": "size-8 rounded-md",
         "icon-lg": "size-11",
       },
     },
