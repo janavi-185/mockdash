@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Menu, Play, ChevronDown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LogoutModal from "@/components/logout";
@@ -41,8 +42,14 @@ export function Topbar({ onMenuClick, title = "Dashboard" }: TopbarProps) {
             className="flex items-center gap-1 cursor-pointer group p-1"
             onClick={() => setShowDropdown(!showDropdown)}
           >
-            <div className="w-8 h-8 rounded-full bg-muted overflow-hidden flex items-center justify-center border border-border">
-              <img src="/profile.png" alt="Profile" className="w-full h-full object-cover" />
+            <div className="w-8 h-8 rounded-full bg-muted overflow-hidden flex items-center justify-center border border-border relative">
+              <Image 
+                src="/profile.png" 
+                alt="Profile" 
+                width={32} 
+                height={32} 
+                className="w-full h-full object-cover" 
+              />
             </div>
             <ChevronDown
               size={14}

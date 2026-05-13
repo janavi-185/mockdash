@@ -54,8 +54,20 @@ export interface FeedbackResponse {
   feedback: FeedbackItem[];
 }
 
+export interface UserProfile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  login_method: string;
+  status: string;
+  is_hintro_admin: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface DashboardResponse {
-  user: any;
+  user: UserProfile;
   subscription: {
     plan: string;
     billing_cycle: string;

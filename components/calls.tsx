@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { MoreVertical, User, CalendarCheck, Loader2 } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import { MoreVertical, CalendarCheck, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getCallHistory, type CallSession, type Participant, type PaginationInfo } from "@/lib/api";
 
@@ -23,8 +24,14 @@ const CallItem = ({ title, time, initial, color, participants = [] }: CallItemPr
         <span className="text-[15px] md:text-base font-bold text-foreground leading-tight">{title}</span>
         <div className="flex items-center -space-x-1.5 mt-1.5">
           {(participants.length > 0 ? participants : [1, 2, 3]).map((_, i) => (
-            <div key={i} className="w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-background bg-muted overflow-hidden flex items-center justify-center">
-              <img src="/profile.png" alt="Participant" className="w-full h-full object-cover" />
+            <div key={i} className="w-5 h-5 md:w-6 md:h-6 rounded-full border-2 border-background bg-muted overflow-hidden flex items-center justify-center relative">
+              <Image 
+                src="/profile.png" 
+                alt="Participant" 
+                width={24} 
+                height={24} 
+                className="w-full h-full object-cover" 
+              />
             </div>
           ))}
         </div>
@@ -45,9 +52,8 @@ export default function Calls() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const loadData = async (page = 1, append = false) => {
-    if (page === 1) setLoading(true);
-    else setLoadingMore(true);
+  const loadData = useCallback(async (page = 1, append = false) => {
+    if (page !== 1) setLoadingMore(true);
 
     const data = await getCallHistory(5, page);
     if (data) {
@@ -60,11 +66,11 @@ export default function Calls() {
     }
     setLoading(false);
     setLoadingMore(false);
-  };
+  }, []);
 
   useEffect(() => {
     loadData(1);
-  }, []);
+  }, [loadData]);
 
   if (loading) return <div className="text-center py-12 text-muted-foreground text-sm font-medium">Loading calls...</div>;
 
