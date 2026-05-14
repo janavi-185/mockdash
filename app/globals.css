@@ -41,6 +41,7 @@
     --color-hintro-blue: var(--hintro-blue);
     --color-hintro-light-blue: var(--hintro-light-blue);
     --color-hintro-star-yellow: var(--hintro-star-yellow);
+    --color-hintro-star-yellow-light: var(--hintro-star-yellow-light);
     --color-hintro-purple: var(--hintro-purple);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
@@ -87,6 +88,7 @@
     --hintro-blue: #4F80FF;
     --hintro-light-blue: #E6EFFF;
     --hintro-star-yellow: #fcdd42;
+    --hintro-star-yellow-light: #fff5b8;
     --hintro-purple: #8A38F5;
 }
 

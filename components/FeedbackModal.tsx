@@ -79,7 +79,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmitSuccess }: Feed
         onClick={handleFinalClose}
       />
       
-      <div className="relative bg-background w-full max-w-xl rounded-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col">
+      <div className="relative bg-background w-full max-w-xl rounded-sm shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 flex flex-col">
         {isSubmitted && (
           <button 
             onClick={handleFinalClose}
@@ -156,11 +156,11 @@ export default function FeedbackModal({ isOpen, onClose, onSubmitSuccess }: Feed
               </div>
             </form>
           ) : (
-            <div className="p-6 md:p-12 flex-1 flex flex-col items-center justify-center text-center animate-in fade-in zoom-in duration-300">
+            <div className="p-6 md:p-12 flex-1 flex flex-col items-center justify-center text-center md:py-20 animate-in fade-in zoom-in duration-300">
               <div className="relative mb-8 md:mb-12">
-                <div className="w-20 h-20 md:w-20 md:h-20 bg-hintro-star-yellow/10 rounded-full flex items-center justify-center">
-                  <div className="w-14 h-14 md:w-14 md:h-14 bg-hintro-star-yellow/60 rounded-full flex items-center justify-center">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-hintro-star-yellow/10 z-50 rounded-full flex items-center justify-center shadow-lg">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center">
+                  <div className="w-14 h-14 md:w-24 md:h-24 bg-hintro-star-yellow/50 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 md:w-16 md:h-16 z-50 rounded-full flex items-center justify-center bg-yellow-100">
                       <Star size={23} className="fill-hintro-star-yellow text-hintro-star-yellow md:w-10 md:h-10" />
                     </div>
                   </div>
@@ -170,7 +170,7 @@ export default function FeedbackModal({ isOpen, onClose, onSubmitSuccess }: Feed
               <h2 className="text-sm md:text-xl font-bold text-foreground leading-tight">
                 Thank you for your feedback!!
               </h2>
-              <p className="text-xs md:text-sm text-muted-foreground max-w-md leading-relaxed mt-4">
+              <p className="text-xs md:text-sm text-muted-foreground max-w-md leading-relaxed mt-1">
                 Our team reviews every suggestion to improve AI responses, workflows, and overall experience.
               </p>
             </div>

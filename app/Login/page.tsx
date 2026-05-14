@@ -2,25 +2,46 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail } from "lucide-react";
+import { Eye, EyeOff, Mail, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+
+const BASE_URL = "https://mock-backend-hintro.vercel.app";
 
 const Login = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    let userId = "u1";
-    if (email.toLowerCase() === "user2@hintro.com") {
-      userId = "u2";
+    const id = identifier.trim();
+    if (!id) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch(`${BASE_URL}/api/auth/profile`, {
+        headers: {
+          "x-user-id": id,
+        },
+      });
+
+      if (response.ok) {
+        localStorage.setItem("hintro_user_id", id);
+        router.push("/Dashboard");
+      } else {
+        setError("Invalid User ID or Email");
+      }
+    } catch (err) {
+      setError("Connection error. Please try again.");
+    } finally {
+      setLoading(false);
     }
-    
-    localStorage.setItem("hintro_user_id", userId);
-    router.push("/Dashboard");
   };
 
   return (
@@ -33,7 +54,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="flex flex-col gap-7">
           <div className="flex flex-col gap-1.5">
             <label
-              htmlFor="email"
+              htmlFor="identifier"
               className="text-md font-medium text-foreground"
             >
               Email
@@ -43,13 +64,13 @@ const Login = () => {
                 <Mail size={16} />
               </span>
               <input
-                id="email"
-                type="email"
+                id="identifier"
+                type="text"
                 placeholder="Example@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                disabled={loading}
                 className="w-full pl-11 pr-4 py-3 rounded-md bg-muted border border-border focus:outline-none focus:ring focus:ring-ring focus:bg-background text-md text-foreground placeholder:text-muted-foreground transition-all duration-200"
-                autoComplete="email"
               />
             </div>
           </div>
@@ -68,6 +89,7 @@ const Login = () => {
                 placeholder="*******"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
                 className="w-full pl-4 pr-10 py-3 rounded-md bg-muted border border-border focus:outline-none focus:ring focus:ring-ring focus:bg-background text-md text-foreground placeholder:text-muted-foreground transition-all duration-200"
                 autoComplete="current-password"
               />
@@ -86,6 +108,7 @@ const Login = () => {
             type="submit"
             variant="default"
             size="xl"
+            disabled={loading || !identifier.trim()}
             className="w-full mt-4"
           >
             Login

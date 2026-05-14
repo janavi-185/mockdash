@@ -101,7 +101,7 @@ const FeedbackHistory = () => {
         {feedbackData.length > 0 ? (
           <div className="space-y-4">
             {feedbackData.map((item, index) => (
-              <div key={index} className="bg-background border border-border rounded-xl p-6 flex flex-col gap-3">
+              <div key={index} className="bg-background border border-border rounded-md p-6 flex flex-col gap-3">
                 <div className="flex justify-between items-start w-full">
                   <h3 className="text-lg font-bold text-foreground leading-tight">{item.title}</h3>
                   <StarRating rating={item.rating} />
@@ -118,7 +118,7 @@ const FeedbackHistory = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-background border border-border rounded-xl shadow-sm min-h-[300px] flex flex-col items-center justify-center p-12">
+          <div className="bg-background border border-border rounded-md min-h-[300px] flex flex-col items-center justify-center p-12">
             <p className="text-base font-bold text-foreground mb-6">No feedbacks yet</p>
             <Button 
               onClick={() => setModalOpen(true)}
