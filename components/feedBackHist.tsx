@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import { type FeedbackItem } from "@/lib/api";
 import { Button } from "@/components/ui/button";
@@ -24,15 +24,16 @@ const StarRating = ({ rating }: { rating: string }) => {
 };
 
 const FeedbackHistory = () => {
-  const [feedbackData, setFeedbackData] = useState<FeedbackItem[]>(() => {
+  const [feedbackData, setFeedbackData] = useState<FeedbackItem[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
       const userId = localStorage.getItem("hintro_user_id") || "u1";
       const key = `local_feedback_${userId}`;
-      return JSON.parse(localStorage.getItem(key) || "[]");
+      setFeedbackData(JSON.parse(localStorage.getItem(key) || "[]"));
     }
-    return [];
-  });
-  const [modalOpen, setModalOpen] = useState(false);
+  }, []);
 
   const refreshFeedback = () => {
     if (typeof window !== "undefined") {
@@ -70,9 +71,9 @@ const FeedbackHistory = () => {
                     <tr key={index} className="hover:bg-muted/30 transition-colors">
                       <td className="px-8 py-6 text-sm font-bold text-foreground">{item.title}</td>
                       <td className="px-8 py-6 text-sm font-bold text-foreground">
-                        <StarRating rating={item.rating} />
+                        {item.rating}
                       </td>
-                      <td className="px-8 py-6 text-sm font-medium text-muted-foreground">{item.description}</td>
+                      <td className="px-8 py-6 text-sm font-medium text-muted-foreground"> - {item.description}</td>
                       <td className="px-8 py-6 text-sm font-bold text-foreground">{item.date}</td>
                       <td className="px-8 py-6 text-sm font-bold text-foreground">{item.time}</td>
                     </tr>
@@ -112,7 +113,7 @@ const FeedbackHistory = () => {
                 <div className="flex items-center gap-1.5 text-xs font-bold text-hintro-blue">
                   <span>{item.date}</span>
                   <span className="opacity-40">•</span>
-                  <span>{item.time}</span>
+                  <span className="text-foreground/40">{item.time}</span>
                 </div>
               </div>
             ))}

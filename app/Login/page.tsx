@@ -38,6 +38,7 @@ const Login = () => {
         setError("Invalid User ID or Email");
       }
     } catch (err) {
+      console.error(err);
       setError("Connection error. Please try again.");
     } finally {
       setLoading(false);
@@ -104,6 +105,12 @@ const Login = () => {
             </div>
           </div>
 
+          {error && (
+            <p className="text-sm font-medium text-destructive text-center -mt-4 animate-in fade-in slide-in-from-top-1">
+              {error}
+            </p>
+          )}
+
           <Button
             type="submit"
             variant="default"
@@ -111,6 +118,9 @@ const Login = () => {
             disabled={loading || !identifier.trim()}
             className="w-full mt-4"
           >
+            {loading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : null}
             Login
           </Button>
         </form>

@@ -140,8 +140,8 @@ Returns a paginated list of call sessions for the user.
 
 | User ID | Email | Behaviour |
 |---|---|---|
-| u1 | any email | Empty state, no calls, no stats |
-| u2 | user2@hintro.com | Active state with call sessions and stats |
+| u1 | john@example.com | Empty state, no calls, no stats |
+| u2 | jane@hintro.com | Active state with call sessions and stats |
 
 ---
 
